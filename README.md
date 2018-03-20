@@ -2,7 +2,7 @@
 
 **팀페이지 주소** -
 https://github.com/kookmin-sw/2018-cap1-5
-https://blog.naver.com/jentoo
+, https://blog.naver.com/jentoo
 
 ### 1. 프로잭트 소개
 
