@@ -25,6 +25,7 @@ https://youtu.be/-gu0ZuukWVc
 조원
 
 - 박주언
+jueonpk@gmail.com
 
 - 송민석
 
