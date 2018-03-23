@@ -1,4 +1,4 @@
-djqh
+
 
 **팀페이지 주소** -
 https://github.com/kookmin-sw/2018-cap1-5
