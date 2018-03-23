@@ -29,6 +29,7 @@ https://youtu.be/-gu0ZuukWVc
 - 송민석
 
 - 조경문
+gj0665@gmail.com
 
 ### 4. 사용법
 
