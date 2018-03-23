@@ -29,9 +29,9 @@ jueonpk@gmail.com
 
 - 송민석
 
-  role   :　　Android App development & design
+  role　　:　　Android App development & design
 
-  e-mail : 　djqhr490@gmail.com
+  e-mail　: 　djqhr490@gmail.com
 
 - 조경문
 gj0665@gmail.com
