@@ -31,9 +31,7 @@ jueonpk@gmail.com
 
 - 조경문
 
-
 Role   : Facilitator, Server Developer, Web Developer
-
 
 e-mail : gj0665@gmail.com
 
