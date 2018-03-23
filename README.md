@@ -37,7 +37,7 @@ jueonpk@gmail.com
 
 role　　:　　Facilitator, Server Developer, Web Developer
 
-e-mail :　　gj0665@gmail.com
+e-mail　:　　gj0665@gmail.com
 
 ### 4. 사용법
 
