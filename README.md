@@ -1,4 +1,4 @@
-
+djqh
 
 **팀페이지 주소** -
 https://github.com/kookmin-sw/2018-cap1-5
@@ -29,11 +29,12 @@ jueonpk@gmail.com
 
 - 송민석
 
+role　 :　　Android App development & design
+
+e-mail : 　djqhr490@gmail.com
+
 - 조경문
-
-role : Facilitator, Server Developer, Web Developer
-
-e-mail : gj0665@gmail.com
+gj0665@gmail.com
 
 ### 4. 사용법
 
