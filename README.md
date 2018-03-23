@@ -30,8 +30,12 @@ jueonpk@gmail.com
 - 송민석
 
 - 조경문
-역할 : Facilitator, Server Developer, Web Developer
-email : gj0665@gmail.com
+
+
+Role   : Facilitator, Server Developer, Web Developer
+
+
+e-mail : gj0665@gmail.com
 
 ### 4. 사용법
 
