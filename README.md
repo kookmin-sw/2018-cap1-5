@@ -21,7 +21,6 @@ https://youtu.be/-gu0ZuukWVc
 조장
 
 - 강현구
-hyungoo.kang.kmucs@gmail.com
 
 조원
 
@@ -31,7 +30,8 @@ jueonpk@gmail.com
 - 송민석
 
 - 조경문
-gj0665@gmail.com
+역할 : Facilitator, Server Developer, Web Developer
+email : gj0665@gmail.com
 
 ### 4. 사용법
 
