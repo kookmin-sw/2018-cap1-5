@@ -34,7 +34,10 @@ jueonpk@gmail.com
   e-mail　:　　djqhr490@gmail.com
 
 - 조경문
-gj0665@gmail.com
+
+role　　:　　Facilitator, Server Developer, Web Developer
+
+e-mail :　　gj0665@gmail.com
 
 ### 4. 사용법
 
