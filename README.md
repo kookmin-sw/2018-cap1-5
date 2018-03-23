@@ -21,6 +21,7 @@ https://youtu.be/-gu0ZuukWVc
 조장
 
 - 강현구
+hyungoo.kang.kmucs@gmail.com
 
 조원
 
