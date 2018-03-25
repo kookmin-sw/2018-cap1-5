@@ -10,5 +10,4 @@ blog tutorial:Create a WiFi hotspot from Android which is already connected to W
 
 (와이파이 다이렉트를 이용한 wifi+ap mode 기술)
 
-
-![as wifi Direct](http://img.youtube.com/vi/O7MsePXxb0E/0.jpg)
+[![as wifi Direct](http://img.youtube.com/vi/O7MsePXxb0E/0.jpg)](http://www.youtube.com/watch?v=O7MsePXxb0E "wi Direct")
