@@ -24,7 +24,7 @@ https://youtu.be/-gu0ZuukWVc
 
 #### 강현구(조장)
 ```
-role : 
+role : Development, administrative management
 e-mail : hyungoo.kang.kmucs@gmail.com
 ```
 
