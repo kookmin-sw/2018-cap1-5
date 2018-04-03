@@ -30,7 +30,7 @@ e-mail : hyungoo.kang.kmucs@gmail.com
 
 #### 박주언
 ```
-role : 
+role : server, app develop
 e-mail : jueonpk@gmail.com
 ```
 
