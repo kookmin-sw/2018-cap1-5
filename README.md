@@ -42,7 +42,7 @@ e-mail :　djqhr490@gmail.com
 
 #### 조경문
 ```
-role : Facilitator, Server Developer, Web Developer
+role : Facilitator, Web Developer, App Developer, Server Developer
 e-mail : gj0665@gmail.com
 ```
 
