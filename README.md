@@ -30,7 +30,7 @@ e-mail : hyungoo.kang.kmucs@gmail.com
 
 #### 박주언
 ```
-role : server, app develop
+role : Server Development, App Development
 e-mail : jueonpk@gmail.com
 ```
 
@@ -42,7 +42,7 @@ e-mail :　djqhr490@gmail.com
 
 #### 조경문
 ```
-role : Facilitator, Web Developer, App Developer
+role : Facilitator, Web Development, App Development
 e-mail : gj0665@gmail.com
 ```
 
