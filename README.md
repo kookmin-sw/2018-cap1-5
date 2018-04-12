@@ -47,8 +47,13 @@ e-mail :　djqhr490@gmail.com
 role : Facilitator, Web Development, Server Development
 e-mail : gj0665@gmail.com
 ```
+## 4. Abstract
+ Even if the Internet is not connected, A small number of devices communicate with each other to create a server platform that can exchange various contents such as chat or games.
+ In the "Small Server_(작은 서버)_" project, a single device becomes a "Group Owner(GO)", which uses Wi-Fi Direct to connect with nearby devices to form a group and form a small network. A server can be formed inside the 'GO' device so that content such as a chat or a game can be excuted together with other connected devices.
+ Based on this basic connection implementation, the 'Small Server' builds a content server on the outside. It stores and manages contents of one commodity value by uploading the application to the server. The user who downloads various contents here makes the contents operate on the server. It also provides a development environment, modules and libraries for developers so that the applications developed by the developers can be uploaded to the content server as a single product.
 
-## 4. 사용법
+
+## 5. 사용법
 
 준비중 :sleeping::sleeping:
 
