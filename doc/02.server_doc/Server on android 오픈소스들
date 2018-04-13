@@ -1,0 +1,11 @@
+Nanohttpd; 간단한 웹서버를 안드로이드에서 구현(오픈소스): https://github.com/NanoHttpd/nanohttpd
+
+**** NanoHTTPD – a tiny web server in Java
+NanoHTTPD is a light-weight HTTP server designed for embedding in other applications, released under a Modified BSD licence.***
+
+*Android-http-server**
+https://github.com/piotrpolak/android-http-server
+
+
+**nodejs-mobile** 
+https://github.com/janeasystems/nodejs-mobile
