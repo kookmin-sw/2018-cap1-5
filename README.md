@@ -1,6 +1,6 @@
 # 작은 서버 :sparkles::rocket::sparkles:
 
-# 이미지 넣기!
+![cap5door](./doc/gitpageSource/cap5door.png)
 
 **팀페이지 주소** -
 https://github.com/kookmin-sw/2018-cap1-5
