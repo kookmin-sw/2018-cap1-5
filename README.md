@@ -1,4 +1,4 @@
-# 작은 서버 :sparkles::rocket::sparkles:
+# 작은 서버 :rocket:
 
 ![cap5door](./doc/gitpageSource/cap5door.png)
 
