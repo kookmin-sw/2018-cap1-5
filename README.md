@@ -38,7 +38,7 @@ e-mail : jueonpk@gmail.com
 
 #### 송민석
 ```
-role :　Android App development , planning and design
+role :　Android App Development , planning and design
 e-mail :　djqhr490@gmail.com
 ```
 
