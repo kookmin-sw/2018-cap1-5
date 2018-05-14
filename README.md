@@ -8,6 +8,10 @@ https://github.com/kookmin-sw/2018-cap1-5
 **블로그 주소** -
 https://blog.naver.com/jentoo
 
+**홈페이지 주소** -
+file://Users/penguin/web-client-2018-01-project-jentoopengion/Smallserver/smallserver.html
+
+
 ## 1. 프로젝트 소개
 
 ‘작은 서버’는 Cellular or Wi-Fi 등 인터넷과 연결되지 않는 상황에서도, 하나의 기기가 서버의 역할을 하게 함으로써, 와이파이를 이용해 근처에 있는 기기와 신호를 공유하여 작은 네트워크를 형성한다.
