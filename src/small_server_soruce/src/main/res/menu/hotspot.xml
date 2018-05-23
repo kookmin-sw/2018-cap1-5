@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <!--<item-->
+        <!--android:id="@+id/menu1"-->
+
+        <!--android:title="핫스팟 설정"-->
+        <!--app:showAsAction="always|withText" />-->
+
+
+        <!-- "Mark Favorite", should appear as action button if possible -->
+    <item
+        android:id="@+id/action_settings"
+        android:icon="@android:drawable/ic_menu_preferences"
+
+
+        android:title="핫스팟 설정"
+        app:showAsAction="ifRoom" />
+        <!-- Settings, should always be in the overflow -->
+        <!--<item android:id="@+id/action_settings2"-->
+            <!--android:title="항목1"-->
+            <!--app:showAsAction="never"/>-->
+        <!--<item android:id="@+id/action_settings3"-->
+            <!--android:title="항목2"-->
+            <!--app:showAsAction="never"/>-->
+
+</menu>
