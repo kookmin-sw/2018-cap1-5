@@ -1,44 +1,47 @@
+// http, express, app,port 정의
 const http = require('http');
 const express = require('express');
-const socketio = require('socket.io');
-
-const RpsGame = require('./rps-game'); // call rps-game.js
 const app = express();
-
-const clientPath = `${__dirname}/../client`;
-console.log(`Serving static from ${clientPath}`);
-
-app.use(express.static(clientPath));
-
+var port = process.env.PORT || 4000;
+// createServer
 const server = http.createServer(app);
-
+// socket.io 불러오기
+const socketio = require('socket.io');
 const io = socketio(server);
+/*B-A*/const clientPath = `${__dirname}/../client`;
+/*B-A*/console.log(`Serving static from ${clientPath}`);
+/*B-A*/let waitingPlayer = null;
 
-let waitingPlayer = null;
+// io.on 부분
+io.on('connection', function(socket){
 
-// call when user connected?
-io.on('connection', (sock) => {
+/*B-A*/	if (waitingPlayer) { // if there is waiting player -> start a game
+
+/*B-A*/		//[socket, waitingPlayer].forEach(s => s.emit('message', 'Game Starts!')); // send message to two guys
+/*B-A*/		new RpsGame(waitingPlayer , socket);
+/*B-A*/		waitingPlayer = null;
+/*B-A*/	} else { // no player waiting -> waitingPlayer will be sock
+/*B-A*/		waitingPlayer = socket;
+/*B-A*/		waitingPlayer.emit('message', 'Waiting for an opponent');
+/*B-A*/	}
 	
-	if (waitingPlayer) { // if there is waiting player -> start a game
-
-		//[sock, waitingPlayer].forEach(s => s.emit('message', 'Game Starts!')); // send message to two guys
-		new RpsGame(waitingPlayer , sock);
-		waitingPlayer = null;
-	} else { // no player waiting -> waitingPlayer will be sock
-		waitingPlayer = sock;
-		waitingPlayer.emit('message', 'Waiting for an opponent');
-	}
-
-	sock.on('message', (text) => { // message inputed?
-		io.emit('message', text); // broadcast message
+	
+	socket.on('message', function(msg){ // message inputed?
+		io.emit('message', msg); // broadcast message
 	});
 });
-
+	
+// server.on listen
 server.on('error', (err) => {
 	console.error('Server error:', err);
 });
+server.listen(port, function(){
+	console.log('listening on *:' + port);
+	});
 
 
-server.listen(8080, () => {
-	console.log('RSP started on 8080');
-});
+/*B-A*/const RpsGame = require('./rps-game'); // call rps-game.js
+/*B-A*/app.use(express.static(clientPath));
+/*B-A*/
+/*B-A*/
+/*B-A*/
