@@ -5,7 +5,7 @@
     <style>
       * { margin: 0; padding: 0; box-sizing: border-box; }
       body { background: gray; font: 36px Helvetica, Arial; }
-      form { background: yellowgreen; padding: 3px; position: fixed; bottom: 0; width: 100%; }
+      form { background: green; padding: 3px; position: fixed; bottom: 0; width: 100%; }
       form input { font-size: 36pt; background: red; border: 0; padding: 10px; width: 80%; margin-right: .5%; }
       form button { font-size: 24pt;width: 19%; background: yellow; border: none; padding: 10px; }
       #messages { list-style-type: none; margin: 0; padding: 0; }
@@ -32,11 +32,11 @@
       $(function () {
         var socket = io();
         $('form').submit(function(){
-          socket.emit('chat message', $('#m').val());
+          socket.emit('message', $('#m').val());
           $('#m').val('');
           return false;
         });
-        socket.on('chat message', function(msg){
+        socket.on('message', function(msg){
           $('#messages').append($('<li>').html("<b>"+content+"</b>: "+msg));
           window.scrollTo(0, document.body.scrollHeight);
         });
