@@ -5,16 +5,27 @@ const app = express();
 var port = process.env.PORT || 4000;
 // createServer
 const server = http.createServer(app);
+// server.on listen
+server.on('error', (err) => {
+	console.error('Server error:', err);
+});
+server.listen(port, function(){
+	console.log('listening on *:' + port);
+	});
+	
+//B가 필요한 정적파일 로드
+const clientPath = require('path');
+/*B*/app.use(express.static(clientPath.join(__dirname, '/../client')));
+//B만 사용하는 코드
+/*B*/const RpsGame = require('./rps-game'); // call rps-game.js
+/*B*/
+/*B*/
 // socket.io 불러오기
 const socketio = require('socket.io');
 const io = socketio(server);
-/*B-A*/const clientPath = `${__dirname}/../client`;
-/*B-A*/console.log(`Serving static from ${clientPath}`);
-/*B-A*/let waitingPlayer = null;
-
 // io.on 부분
+/*B-A*/let waitingPlayer = null;
 io.on('connection', function(socket){
-
 /*B-A*/	if (waitingPlayer) { // if there is waiting player -> start a game
 
 /*B-A*/		//[socket, waitingPlayer].forEach(s => s.emit('message', 'Game Starts!')); // send message to two guys
@@ -30,18 +41,3 @@ io.on('connection', function(socket){
 		io.emit('message', msg); // broadcast message
 	});
 });
-	
-// server.on listen
-server.on('error', (err) => {
-	console.error('Server error:', err);
-});
-server.listen(port, function(){
-	console.log('listening on *:' + port);
-	});
-
-
-/*B-A*/const RpsGame = require('./rps-game'); // call rps-game.js
-/*B-A*/app.use(express.static(clientPath));
-/*B-A*/
-/*B-A*/
-/*B-A*/
