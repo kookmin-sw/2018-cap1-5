@@ -22,9 +22,8 @@
     <script type="text/javascript" src="socket.js"></script>
     <script type="text/javascript" src="jquery.js"></script>
     <script> //대화명 지정
-      var str = '대화명을 입력해주세요.';
       var content;
-      content = prompt('메시지창', str);
+      content = prompt('대화명을 입력해주세요.', '');
 
     </script>
 
@@ -32,12 +31,12 @@
       $(function () {
         var socket = io();
         $('form').submit(function(){
-          socket.emit('message', $('#m').val());
+          socket.emit('message', '<b>'+content+'</b>: '+$('#m').val());
           $('#m').val('');
           return false;
         });
         socket.on('message', function(msg){
-          $('#messages').append($('<li>').html("<b>"+content+"</b>: "+msg));
+          $('#messages').append($('<li>').html(msg));
           window.scrollTo(0, document.body.scrollHeight);
         });
       });
