@@ -51,7 +51,7 @@ public class CustomListView extends ArrayAdapter<String> {
         {
             viewHolder=(ViewHolder) r.getTag();
         }
-        viewHolder.ivw.setImageURI(imgid.get(position));
+        //viewHolder.ivw.setImageURI(imgid.get(position));
         viewHolder.tvw1.setText(items.get(position));
         viewHolder.tvw2.setText(desc.get(position));
 
@@ -68,7 +68,7 @@ public class CustomListView extends ArrayAdapter<String> {
         {
             tvw1=(TextView) v.findViewById(R.id.servername);
             tvw2=(TextView) v.findViewById(R.id.serverdescription);
-            ivw= (ImageView) v.findViewById(R.id.imageView);
+            //ivw= (ImageView) v.findViewById(R.id.imageView);
         }
 
     }
