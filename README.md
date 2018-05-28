@@ -1,5 +1,4 @@
-# 작은 서버 :rocket:
-![](https://secure.travis-ci.org/kookmin-sw/2018-cap1-5.png)
+# 작은 서버 :rocket:![](https://secure.travis-ci.org/kookmin-sw/2018-cap1-5.png)
 ![cap5door](./doc/gitpageSource/cap5door.png)
 
 **팀페이지 주소** -
