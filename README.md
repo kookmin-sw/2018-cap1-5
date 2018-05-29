@@ -44,7 +44,7 @@ e-mail :　djqhr490@gmail.com
 
 #### 조경문
 ```
-role : Facilitator, Web Development, Server Development
+role : Facilitator, Front-end Developer
 e-mail : gj0665@gmail.com
 ```
 ## 4. Abstract
