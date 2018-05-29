@@ -1,37 +1,59 @@
-## Welcome to GitHub Pages
+# 작은 서버 :rocket:[![Build Status](https://travis-ci.org/kookmin-sw/2018-cap1-5.svg?branch=master)](https://travis-ci.org/kookmin-sw/2018-cap1-5)
+![cap5door](./doc/gitpageSource/cap5door.png)
 
-You can use the [editor on GitHub](https://github.com/kookmin-sw/cap-template/edit/master/index.md) to maintain and preview the content for your website in Markdown files.
+**팀페이지 주소** -
+https://github.com/kookmin-sw/2018-cap1-5
 
-Whenever you commit to this repository, GitHub Pages will run [Jekyll](https://jekyllrb.com/) to rebuild the pages in your site, from the content in your Markdown files.
+**블로그 주소** -
+https://blog.naver.com/jentoo
 
-### Markdown
 
-Markdown is a lightweight and easy-to-use syntax for styling your writing. It includes conventions for
+## 1. 프로젝트 소개
 
-```markdown
-Syntax highlighted code block
+‘작은 서버’는 Cellular or Wi-Fi 등 인터넷과 연결되지 않는 상황에서도, 하나의 기기가 서버의 역할을 하게 함으로써, 와이파이를 이용해 근처에 있는 기기와 신호를 공유하여 작은 네트워크를 형성한다.
+서버 역할의 AP가 되는 기기의 사용자는 메인 서버와 연결된 작은 서버 서비스 앱에서 서버로 열고 싶은 서비스 컨텐츠를 선택하여 다운로드 받을 수 있고, 이를 통해 서버를 열어 컨텐츠를 공유한다.
 
-# Header 1
-## Header 2
-### Header 3
+## 2. 소개 영상
+https://youtu.be/-gu0ZuukWVc
 
-- Bulleted
-- List
+## 3. 팀 소개
 
-1. Numbered
-2. List
+### - 지도교수
 
-**Bold** and _Italic_ and `Code` text
+#### 이민석 교수님
 
-[Link](url) and ![Image](src)
+### - 조원
+
+#### 강현구(조장)
+```
+role : Development, administrative management
+e-mail : hyungoo.kang.kmucs@gmail.com
 ```
 
-For more details see [GitHub Flavored Markdown](https://guides.github.com/features/mastering-markdown/).
+#### 박주언
+```
+role : Server Development, App Development
+e-mail : jueonpk@gmail.com
+```
 
-### Jekyll Themes
+#### 송민석
+```
+role :　Android App Development , planning and design
+e-mail :　djqhr490@gmail.com
+```
 
-Your Pages site will use the layout and styles from the Jekyll theme you have selected in your [repository settings](https://github.com/kookmin-sw/cap-template/settings). The name of this theme is saved in the Jekyll `_config.yml` configuration file.
+#### 조경문
+```
+role : Facilitator, Front-end Developer
+e-mail : gj0665@gmail.com
+```
+## 4. Abstract
+ Even if the Internet is not connected, A small number of devices communicate with each other to create a server platform that can exchange various contents such as chat or games.
+ In the "Small Server_(작은 서버)_" project, a single device becomes a "Group Owner(GO)", which uses Wi-Fi Direct to connect with nearby devices to form a group and form a small network. A server can be formed inside the 'GO' device so that content such as a chat or a game can be excuted together with other connected devices.
+ Based on this basic connection implementation, the 'Small Server' builds a content server on the outside. It stores and manages contents of one commodity value by uploading the application to the server. The user who downloads various contents here makes the contents operate on the server. It also provides a development environment, modules and libraries for developers so that the applications developed by the developers can be uploaded to the content server as a single product.
 
-### Support or Contact
 
-Having trouble with Pages? Check out our [documentation](https://help.github.com/categories/github-pages-basics/) or [contact support](https://github.com/contact) and we’ll help you sort it out.
+## 5. 사용법
+
+준비중 :sleeping::sleeping:
+
