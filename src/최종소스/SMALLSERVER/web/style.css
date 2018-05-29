@@ -37,8 +37,8 @@ body{
     color: cornflowerblue;
     position: fixed;
     font-weight: bold;
-    bottom: 50px;
-    right: 50px;
+    bottom: 30px;
+    right: 55px;
 }
 
 .adviceBtn:hover {
@@ -47,8 +47,8 @@ body{
     color: skyblue;
     position: fixed;
     font-weight: bold;
-    bottom: 50px;
-    right: 50px;
+    bottom: 30px;
+    right: 55px;
 }
 
 /* navbar */
@@ -145,7 +145,7 @@ h3{
 
 /*slider-holder*/
 .slider-holder{
-    width: 700px;
+    width: 800px;
     height: 500px;
     background-color: yellow;
     margin-left: auto;
@@ -156,7 +156,7 @@ h3{
 }
         
 .image-holder{
-    width: 2800px;
+    width: 3200px;
     background-color: red;
     height: 500px;
     clear: both;
@@ -169,7 +169,7 @@ h3{
 }
 
 .image-holder img{
-    width: 700px;
+    width: 800px;
     height: 500px;
 }
         
@@ -185,14 +185,14 @@ h3{
 }
         
 #slider-image-2:target ~ .image-holder{
-    left: -700px;
+    left: -800px;
 }
         
 #slider-image-3:target ~ .image-holder{
-    left: -1400px;
+    left: -1600px;
 }
 #slider-image-4:target ~ .image-holder{
-    left: -2100px;
+    left: -2400px;
 }
         
 .button-holder{
@@ -220,6 +220,7 @@ h3{
     display: block;
     margin-left: auto;
     margin-right: auto;
+    margin-top: 60px;
 }
 .product-name{
     margin-top: 20px;
