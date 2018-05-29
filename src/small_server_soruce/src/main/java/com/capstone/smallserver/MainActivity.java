@@ -82,7 +82,329 @@ import java.util.Iterator;
 import java.util.List;
 
 
+/* 액티비티 설명: 현재 저장되어있는 서버 listView로 출력, 다른 메뉴로 넘어갈 수 있는 액티비티.
+                                                                                        */
+
+
 public class MainActivity extends AppCompatActivity {
+
+
+    // Used to load the 'native-lib' library on application startup.
+    static {
+        System.loadLibrary("native-lib");
+        System.loadLibrary("node");
+    }
+
+    //We just want one instance of node running in the background.
+    public static boolean _startedNodeAlready = false;
+
+    final Context context = this;
+
+    private NetworkInfo mNetworkState;
+    private String nodeName;
+    private String serverName;
+    private String iconImgName;
+    private DrawerLayout mDrawerLayout;
+
+    private ListView listView;
+    private ArrayList<String> items;
+    private ArrayList<String> desc;
+    private ArrayList<Uri> imgid;
+    private CustomListView customListView;
+
+    private String rootPath = "";
+    private String nextPath = "";
+    private String currentPath = "";
+
+    private Button btnClosePopup;
+    private Button btnServerStart;
+    private ImageView doorImg;
+    private Uri uri;
+
+    private PopupWindow pwindo;
+    private int mWidthPixels, mHeightPixels;
+    private Thread cib;
+
+
+    //삭제후 listView 갱신하기 위한 UI제어 핸들러
+    private Handler refreshHandler = new Handler() {
+        public void handleMessage(Message msg) {
+
+
+            boolean result = Init(getApplicationContext().getFilesDir().getAbsolutePath()+"/nodejs-project");
+
+            if (result == false)
+                return;
+
+            listView.setAdapter(customListView);
+        }
+    };
+
+
+
+    //옵션 메뉴 생성 코드//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        MenuInflater inflater = getMenuInflater();
+        inflater.inflate(R.menu.menu, menu);
+        return true;
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+
+
+        int id = item.getItemId();
+
+        switch (id) {
+            case android.R.id.home:
+                if(mDrawerLayout.isDrawerOpen(GravityCompat.START))
+                {
+                    mDrawerLayout.closeDrawers();
+                }
+                else {
+                    mDrawerLayout.openDrawer(GravityCompat.START);
+                }
+                return true;
+
+        }
+
+        return super.onOptionsItemSelected(item);
+    }
+    //옵션 메뉴 생성 코드 끝//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+
+    @Override
+    protected void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        setContentView(R.layout.activity_main);
+
+
+        final Button offButton = (Button) findViewById(R.id.button);
+
+        //////////////listView를 위한 변수할당/////////////////////////////////
+        items = new ArrayList<>();
+        desc = new ArrayList<>();
+        imgid = new ArrayList<>();
+        listView = (ListView) findViewById(R.id.serverList);
+        customListView = new CustomListView(this, items, desc, imgid);
+
+        //////////////팝업창을 위한 변수할당/////////////////////////////////
+        WindowManager w = getWindowManager();
+        Display d = w.getDefaultDisplay();
+        DisplayMetrics metrics = new DisplayMetrics();
+        d.getMetrics(metrics);
+        // since SDK_INT = 1;
+        mWidthPixels = metrics.widthPixels;
+        mHeightPixels = metrics.heightPixels;
+
+        //좌측 메뉴를 누르면 메뉴가 나타나도록 하기 위한 변수 할당////
+        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
+        setSupportActionBar(toolbar);
+        ActionBar actionBar = getSupportActionBar();
+        actionBar.setHomeAsUpIndicator(R.drawable.ic_menu);
+        actionBar.setDisplayHomeAsUpEnabled(true);
+
+        mDrawerLayout = (DrawerLayout) findViewById(R.id.drawer_layout);
+        NavigationView navigationView = (NavigationView) findViewById(R.id.navigation_view);
+
+
+
+        //외부 저장소에서 파일을 불러오기 위한 권한 획득
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) { // 마시멜로우 버전과 같거나 이상이라면
+            if (checkSelfPermission(Manifest.permission.WRITE_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED
+                    || checkSelfPermission(Manifest.permission.READ_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED) {
+                if (shouldShowRequestPermissionRationale(Manifest.permission.WRITE_EXTERNAL_STORAGE)) {
+                    Toast.makeText(this, "외부 저장소 사용을 위해 읽기/쓰기 필요", Toast.LENGTH_SHORT).show();
+                }
+
+                requestPermissions(new String[]
+                                {Manifest.permission.WRITE_EXTERNAL_STORAGE, Manifest.permission.READ_EXTERNAL_STORAGE},
+                        2);  //마지막 인자는 체크해야될 권한 갯수
+            }
+        }
+
+
+        //좌측 메뉴를 누르면 발생하는 이벤트 처리/////////////////////////////////////////////////////////////////////////////
+        navigationView.setNavigationItemSelectedListener(new NavigationView.OnNavigationItemSelectedListener() {
+            @Override
+            public boolean onNavigationItemSelected(MenuItem menuItem) {
+
+                mDrawerLayout.closeDrawers();
+                int id = menuItem.getItemId();
+                switch (id) {
+                    case R.id.hotspot:
+
+                        k();
+                        break;
+
+                    case R.id.server_market:
+                        //인터넷 연결이 되어있는 경우에만 마켓으로 연결
+                        mNetworkState = getNetworkInfo();
+                        if (mNetworkState != null && mNetworkState.isConnected()) {
+                            Intent AWSIntent = new Intent(MainActivity.this, AWSExplorerActivity.class);
+                            startActivityForResult(AWSIntent, 1111);
+                        } else {
+                            Toast.makeText(context, "인터넷 연결을 해주세요", Toast.LENGTH_SHORT).show();
+                        }
+                        break;
+
+                    case R.id.server_make:
+
+                        break;
+
+                    case R.id.server_upload:
+                        Intent intent2 = new Intent(getApplicationContext(),
+                                ExternalExplorerActivity.class);
+                        startActivity(intent2);
+                        break;
+
+
+                }
+                return true;
+            }
+        });
+
+
+        //팝업창 설정 초기화/////////////////////////////////////////////////////////////////////////////
+        // 상태바와 메뉴바의 크기를 포함해서 재계산
+        if (Build.VERSION.SDK_INT >= 14 && Build.VERSION.SDK_INT < 17)
+            try {
+                mWidthPixels = (Integer) Display.class.getMethod("getRawWidth").invoke(d);
+                mHeightPixels = (Integer) Display.class.getMethod("getRawHeight").invoke(d);
+            } catch (Exception ignored) {
+            }
+        // 상태바와 메뉴바의 크기를 포함
+        if (Build.VERSION.SDK_INT >= 17)
+            try {
+                Point realSize = new Point();
+                Display.class.getMethod("getRealSize", Point.class).invoke(d, realSize);
+                mWidthPixels = realSize.x;
+                mHeightPixels = realSize.y;
+            } catch (Exception ignored) {
+            }
+
+
+        /////////////////////ㅣistView 에 서버목록 적용 부분////////////////////////////////////////////////////////////////////////////
+        rootPath = getApplicationContext().getFilesDir().getAbsolutePath() + "/nodejs-project";
+        boolean result = Init(rootPath);
+
+        if (result == false)
+            return;
+
+        listView.setAdapter(customListView);
+
+        listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+
+                currentPath = rootPath;
+                String path = items.get(position).toString();
+
+                PathForOpen(path);
+            }
+        });
+
+        //오래 눌렀을 경우 삭제하는 기능 출력 구현부/////////////////////////////////////////////////////////////////
+        listView.setOnItemLongClickListener(new AdapterView.OnItemLongClickListener() {
+
+            @Override
+            public boolean onItemLongClick(AdapterView<?> parent, View view,
+                                           final int position, long id) {
+                AlertDialog diaBox = new AlertDialog.Builder(MainActivity.this)
+                        .setTitle("삭제")
+                        .setMessage("해당 서버를 삭제하시겠습니까?")
+                        .setPositiveButton("삭제", new DialogInterface.OnClickListener() {
+                            public void onClick(DialogInterface dialog, int whichButton) {
+                                new Thread(new Runnable() {
+                                    @Override
+                                    public void run() {
+                                        //The path where we expect the node project to be at runtime.
+
+                                        String nodeDir = getApplicationContext().getFilesDir().getAbsolutePath() + "/nodejs-project/" + items.get(position);
+                                        //Recursively delete any existing nodejs-project.
+                                        File nodeDirReference = new File(nodeDir);
+                                        if (nodeDirReference.exists()) {
+                                            deleteFolderRecursively(new File(nodeDir));
+
+                                        }
+                                        Message message = refreshHandler.obtainMessage();
+                                        refreshHandler.sendMessage(message);
+
+                                    }
+                                }).start();
+                                listView.clearChoices();
+
+
+                            }
+                        })
+                        .setNegativeButton("돌아가기", null)
+                        .create();
+                diaBox.show();
+                return true;
+            }
+        });
+
+
+        //서버 끄기 버튼 눌렀을 경우 이벤트 처리를 위한 리스너. 프로세스를 종료하고 재시작 한다.
+        offButton.setOnClickListener(
+
+                new Button.OnClickListener() {
+                    public void onClick(View v) {
+
+                        Intent i = getBaseContext().getPackageManager()
+                                .getLaunchIntentForPackage(getBaseContext().getPackageName());
+                        i.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+                        startActivity(i);
+                        System.exit(0);
+
+                        _startedNodeAlready = false;
+
+                    }
+                }
+        );
+
+
+        ///////////////////////////////////////////////////////////////////////////
+        //node.js 엔진에서 서버를 여는 스레드 러닝 코드
+        Runnable runnable = new Runnable() {
+            @Override
+            public void run() {
+
+                   if (nodeName == null) {
+                    return;
+                }
+
+                startNodeWithArguments(new String[]{"node",
+                        nodeName
+                });
+            }
+        };
+
+        //cib 스레드에 서버를 여는 런 코드 스레드를 할당
+        cib = new Thread(runnable);
+
+    }
+
+
+
+    ///////이하 메소드 선언부///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    /**
+     * A native method that is implemented by the 'native-lib' native library,
+     * which is packaged with this application.
+     */
+    //노드를 실행하는 라이브러리 메소드
+    public native Integer startNodeWithArguments(String[] arguments);
+
+
+    //인터넷 연결 되어있는지 확인하는 메소드
+    private NetworkInfo getNetworkInfo()
+    {
+        ConnectivityManager connectivityManager=(ConnectivityManager) getSystemService(CONNECTIVITY_SERVICE);
+        NetworkInfo networkInfo= connectivityManager.getActiveNetworkInfo();
+        return  networkInfo;
+    }
 
     //핫스팟 설정 키기
     private void k() {
@@ -105,538 +427,7 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
-    // Used to load the 'native-lib' library on application startup.
-    static {
-        System.loadLibrary("native-lib");
-        System.loadLibrary("node");
-    }
-
-    //We just want one instance of node running in the background.
-    public static boolean _startedNodeAlready = false;
-    public static boolean _startedCopyThread = false;
-
-
-    final Context context = this;
-
-    String nodeName;
-    String serverName;
-    String iconImgName;
-    Toolbar myToolbar;
-
-    private DrawerLayout mDrawerLayout;
-
-    AmazonS3 s3Client;
-    String bucket = "s3abcd";
-    String path1= Environment.getExternalStorageDirectory().getAbsolutePath()+"/servers/chat/index.html";
-    String path2= Environment.getExternalStorageDirectory().getAbsolutePath()+"/servers/chat/js/index.html";
-    File uploadToS3 = new File(path1);
-    File downloadFromS3 = new File(path2);
-    TransferUtility transferUtility;
-    List<String> listing;
-
-    private ListView listView;
-    private ArrayList<String> items;
-    private ArrayList<String> desc;
-    private ArrayList<Uri> imgid;
-
-
-    CustomListView customListView;
-
-    private String rootPath = "";
-    private String nextPath = "";
-    private String currentPath = "";
-
-    NetworkInfo mNetworkState;
-
-//    @Override
-//    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-//        super.onActivityResult(requestCode, resultCode, data);
-//        if (requestCode == 1111) {
-//            if (resultCode == 1234) {
-//
-//                Message message=handler2.obtainMessage();
-//                  handler2.sendMessage(message);
-//
-//            }
-//        }
-//    }
-//
-
-
-    //옵션 메뉴 생성 코드
-    @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
-        MenuInflater inflater = getMenuInflater();
-        inflater.inflate(R.menu.menu, menu);
-        return true;
-    }
-
-
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        // Handle action bar item clicks here. The action bar will
-        // automatically handle clicks on the Home/Up button, so long
-        // as you specify a parent activity in AndroidManifest.xml.
-        int id = item.getItemId();
-
-        switch (id) {
-            case android.R.id.home:
-                if(mDrawerLayout.isDrawerOpen(GravityCompat.START))
-                {
-                    mDrawerLayout.closeDrawers();
-                }
-                else {
-                    mDrawerLayout.openDrawer(GravityCompat.START);
-                }
-                return true;
-
-        }
-
-        return super.onOptionsItemSelected(item);
-    }
-
-
-
-    private Handler handler = new Handler() {
-
-        public void handleMessage(Message msg) {
-
-            Toast.makeText(context, "열고 싶은 서버를 먼저 선택해주세요", Toast.LENGTH_SHORT).show();
-
-            super.handleMessage(msg);
-
-        }
-
-    };
-
-    private Handler handler2 = new Handler() {
-        public void handleMessage(Message msg) {
-
-
-            boolean result = Init(getApplicationContext().getFilesDir().getAbsolutePath()+"/nodejs-project");
-
-            if (result == false)
-                return;
-
-            listView.setAdapter(customListView);
-        }
-    };
-
-    private Button btnClosePopup;
-    private Button btnServerStart;
-    private Button deleteButton;
-    private ImageView doorImg;
-    private Uri uri;
-
-    private PopupWindow pwindo;
-
-    private int mWidthPixels, mHeightPixels;
-
-    Thread cib;
-
-
-    @Override
-    protected void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_main);
-
-
-        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
-        setSupportActionBar(toolbar);
-        ActionBar actionBar = getSupportActionBar();
-        actionBar.setHomeAsUpIndicator(R.drawable.ic_menu);
-        actionBar.setDisplayHomeAsUpEnabled(true);
-
-
-        mDrawerLayout = (DrawerLayout) findViewById(R.id.drawer_layout);
-
-        NavigationView navigationView = (NavigationView) findViewById(R.id.navigation_view);
-
-
-        navigationView.setNavigationItemSelectedListener(new NavigationView.OnNavigationItemSelectedListener() {
-            @Override
-            public boolean onNavigationItemSelected(MenuItem menuItem) {
-
-                mDrawerLayout.closeDrawers();
-                int id = menuItem.getItemId();
-                switch (id) {
-                    case R.id.hotspot:
-
-                        k();
-                        break;
-
-                    case R.id.server_market:
-                        mNetworkState = getNetworkInfo();
-                        if(mNetworkState != null && mNetworkState.isConnected())
-                        {
-                            Intent AWSIntent = new Intent(MainActivity.this, AWSExplorerActivity.class);
-                            startActivityForResult(AWSIntent, 1111);
-                        }
-                        else
-                        {
-                            Toast.makeText(context, "인터넷 연결을 해주세요", Toast.LENGTH_SHORT).show();
-                        }
-                        break;
-
-                    case R.id.server_make:
-
-                        break;
-
-                    case R.id.server_upload:
-                        Intent intent2 = new Intent(getApplicationContext(),
-                                ExternalExplorerActivity.class);
-                        startActivity(intent2);
-                        break;
-
-
-
-                }
-                return true;
-            }
-        });
-
-
-
-
-        WindowManager w = getWindowManager();
-        Display d = w.getDefaultDisplay();
-        DisplayMetrics metrics = new DisplayMetrics();
-        d.getMetrics(metrics);
-        // since SDK_INT = 1;
-        mWidthPixels = metrics.widthPixels;
-        mHeightPixels = metrics.heightPixels;
-
-
-        // 상태바와 메뉴바의 크기를 포함해서 재계산
-        if (Build.VERSION.SDK_INT >= 14 && Build.VERSION.SDK_INT < 17)
-            try {
-                mWidthPixels = (Integer) Display.class.getMethod("getRawWidth").invoke(d);
-                mHeightPixels = (Integer) Display.class.getMethod("getRawHeight").invoke(d);
-            } catch (Exception ignored) {
-            }
-        // 상태바와 메뉴바의 크기를 포함
-        if (Build.VERSION.SDK_INT >= 17)
-            try {
-                Point realSize = new Point();
-                Display.class.getMethod("getRealSize", Point.class).invoke(d, realSize);
-                mWidthPixels = realSize.x;
-                mHeightPixels = realSize.y;
-            } catch (Exception ignored) {
-            }
-
-
-
-
-
-
-        items = new ArrayList<>();
-        desc= new ArrayList<>();
-        imgid= new ArrayList<>();
-        listView = (ListView) findViewById(R.id.serverList);
-        customListView=new CustomListView(this,items,desc,imgid);
-
-
-//        listAdapter = new ArrayAdapter<String>(ExplorerActivity.this,
-//                android.R.layout.simple_list_item_1, items);
-
-        // 루트 경로 가져오기
-        rootPath =  getApplicationContext().getFilesDir().getAbsolutePath()+"/nodejs-project";
-        boolean result = Init(rootPath);
-
-        if (result == false)
-            return;
-
-        listView.setAdapter(customListView);
-
-        listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-            @Override
-            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-
-                currentPath = rootPath;
-                String path = items.get(position).toString();
-
-                nextPath(path);
-            }
-        });
-
-        listView.setOnItemLongClickListener(new AdapterView.OnItemLongClickListener() {
-
-            @Override
-            public boolean onItemLongClick(AdapterView<?> parent, View view,
-                                           final int position, long id) {
-                AlertDialog diaBox=new AlertDialog.Builder(MainActivity.this)
-                        .setTitle("삭제")
-                        .setMessage("해당 서버를 삭제하시겠습니까?")
-                        .setPositiveButton("삭제", new DialogInterface.OnClickListener() {
-                            public void onClick(DialogInterface dialog, int whichButton) {
-                                new Thread(new Runnable() {
-                                    @Override
-                                    public void run() {
-                                        //The path where we expect the node project to be at runtime.
-
-                                        String nodeDir=getApplicationContext().getFilesDir().getAbsolutePath()+"/nodejs-project/"+items.get(position);
-                                        //Recursively delete any existing nodejs-project.
-                                        File nodeDirReference=new File(nodeDir);
-                                        if (nodeDirReference.exists()) {
-                                            deleteFolderRecursively(new File(nodeDir));
-
-                                        }
-                                        Message message=handler2.obtainMessage();
-                                        handler2.sendMessage(message);
-
-                                    }
-                                }).start();
-                                listView.clearChoices();
-
-
-
-                            }
-                        })
-                        .setNegativeButton("돌아가기", null)
-                        .create();
-                diaBox.show();
-                return true;
-            }
-        });
-
-        //nodeName=getApplicationContext().getFilesDir().getAbsolutePath() + "/nodejs-project"+"/chat/index.js";
-//
-//        final Button serverButton = (Button) findViewById(R.id.ServerButton);
-//        final Button rspButton = (Button) findViewById(R.id.rsp);
-//        final Button uploadButton = (Button) findViewById(R.id.uploadBtn);
-//
-//        final TextView downTxt = (TextView) findViewById(R.id.downText);
-//        final TextView openServerTxt = (TextView) findViewById(R.id.svText);
-//        final TextView listServerTxt = (TextView) findViewById(R.id.svText2);
-
-          final Button offButton=(Button)findViewById(R.id.button);
-//
-//        myToolbar = (Toolbar) findViewById(R.id.toolbar);
-//        setSupportActionBar(myToolbar);
-//
-//        // callback method to call credentialsProvider method.
-//        s3credentialsProvider();
-//
-//        // callback method to call the setTransferUtility method
-//        setTransferUtility();
-//
-
-
-
-        //외부 저장소에서 파일을 불러오기 위한 권한 획득
-
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) { // 마시멜로우 버전과 같거나 이상이라면
-            if (checkSelfPermission(Manifest.permission.WRITE_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED
-                    || checkSelfPermission(Manifest.permission.READ_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED) {
-                if (shouldShowRequestPermissionRationale(Manifest.permission.WRITE_EXTERNAL_STORAGE)) {
-                    Toast.makeText(this, "외부 저장소 사용을 위해 읽기/쓰기 필요", Toast.LENGTH_SHORT).show();
-                }
-
-                requestPermissions(new String[]
-                                {Manifest.permission.WRITE_EXTERNAL_STORAGE, Manifest.permission.READ_EXTERNAL_STORAGE},
-                        2);  //마지막 인자는 체크해야될 권한 갯수
-            }
-        }
-//
-//
-
-        offButton.setOnClickListener(
-
-                new Button.OnClickListener() {
-                    public void onClick(View v) {
-
-
-
-                        Intent i = getBaseContext().getPackageManager()
-                                    .getLaunchIntentForPackage(getBaseContext().getPackageName());
-                            i.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-                            startActivity(i);
-                            System.exit(0);
-
-                            _startedNodeAlready = false;
-
-                    }
-
-                }
-        );
-//
-//
-        //node.js 엔진에서 서버를 여는 스레드 러닝 코드
-        Runnable runnable = new Runnable() {
-            @Override
-            public void run() {
-
-                //ExploerAcitivty에서 전달받은 경로값을 nodeName에다 넣어줌.
-
-                if (nodeName == null) {
-                    //handler.sendEmptyMessage(0);
-                    return;
-                }
-
-
-                String nodeDir = getApplicationContext().getFilesDir().getAbsolutePath() + "/nodejs-project";
-
-                Log.d("nodeDir", nodeDir);
-                Log.d("nodeName", nodeName);
-
-                startNodeWithArguments(new String[]{"node",
-                        nodeName
-                });
-            }
-        };
-//
-//
-//        //외부저장소에 있는 servers 폴더에 저장된 파일을 갖고 오는 스레드 러닝 코드
-//
-//        Runnable runnable2 = new Runnable() {
-//            @Override
-//            public void run() {
-//
-//                //The path where we expect the node project to be at runtime.
-//                String nodeDir = getApplicationContext().getFilesDir().getAbsolutePath() + "/nodejs-project";
-//                String path1=Environment.getExternalStorageDirectory().getAbsolutePath()+"/servers";
-//
-//
-//                    TransferManager manager = new TransferManager(s3Client);
-//                    MultipleFileDownload download =  manager.downloadDirectory("s3abcd", "chat", new File(nodeDir));
-//                    try
-//                    {
-//
-//                        download.addProgressListener(new ProgressListener() {
-//                           @Override
-//                           public void progressChanged(ProgressEvent progressEvent) {
-//                               double pct= progressEvent.getBytesTransferred() * 100.0/ progressEvent.getBytesTransferred();
-//                              //Log.d("percent",String.valueOf(pct));
-//                                Log.d("percent",download.getProgress().getPercentTransferred()+"%");
-//                           }
-//                       });
-//                        download.waitForCompletion();
-//                        Transfer.TransferState xfer_state=download.getState();
-//                        Log.d("state",xfer_state.toString());
-//
-//                    }
-//                    catch (InterruptedException e)
-//                    {
-//                    }
-//                    manager.shutdownNow();
-//
-//                }
-//
-//
-//// try {
-////                    Message premessage=handler3.obtainMessage();
-////                    handler3.sendMessage(premessage);
-////
-////                    //copyDirectory(sourceLocation, new File(nodeDir));
-////                    Message message=handler2.obtainMessage();
-////                    handler2.sendMessage(message);
-////
-////                }
-////                catch (Exception e)
-////                {
-////
-////                }
-////
-//
-//         };
-//
-//        //cib 스레드에 서버를 여는 런 코드를, copyassetT 스레드에 파일을 갖고오는 스레드를 할당
-           cib = new Thread(runnable);
-//         Thread copyassetT=new Thread(runnable2);
-//
-//
-//        //serverButton을 눌렀을때, 서버가져오는 스레드를 start
-//        serverButton.setOnClickListener(
-//
-//                new Button.OnClickListener() {
-//                    public void onClick(View v) {
-//
-//                        // if (!_startedCopyThread) {
-//
-//                        //_startedCopyThread = true;
-//
-//                         //copyassetT.start();
-//
-//
-//                        Intent explorerIntent=new Intent(MainActivity.this, AWSExplorerActivity.class);
-//                        startActivity(explorerIntent);
-//                        //serverButton.setEnabled(false);
-//
-//                    }
-//
-//                }
-//        );
-//
-        //서버 키기 버튼을 눌렀을 때 서버가동 스레드를 스타트, 한번 더 누를경우 프로세스 종료 후 재시작
-//        rspButton.setOnClickListener(
-//
-//                new Button.OnClickListener() {
-//                    public void onClick(View v) {
-//
-//                        if (!_startedNodeAlready) {
-//
-//                            _startedNodeAlready = true;
-//                            cib.start();
-////                            rspButton.setText("서버끄기");
-//                            openServerTxt.setText("서버 끄기");
-//
-//
-//                        } else {
-//
-//                            //cib.interrupt();
-//
-//                            Intent i = getBaseContext().getPackageManager()
-//                                    .getLaunchIntentForPackage(getBaseContext().getPackageName());
-//                            i.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-//                            startActivity(i);
-//                            System.exit(0);
-//
-//                            _startedNodeAlready = false;
-//
-//
-//                        }
-//                    }
-//                }
-//        );
-//
-//
-//        //fetch버튼을 누를 경우 가져올 수 있는 서버 목록을 출력하는 acitivity로 전환
-//
-//        final Button fetchButton = (Button) findViewById(R.id.ServerListButton);
-//
-//        fetchButton.setOnClickListener(new View.OnClickListener() {
-//            public void onClick(View v) {
-//
-//                File dir = context.getFileStreamPath("nodejs-project");
-//                File[] subFiles = dir.listFiles();
-//
-////                if (subFiles != null)
-////                {
-////                    for (File file : subFiles)
-////                    {
-////                        // Here is each file
-////                        Log.d("hi",file.getAbsolutePath());
-////                    }
-////                }
-//
-//                //list를 출력하는 ExplorerActivity를 호출
-//
-//                Intent explorerIntent = new Intent(MainActivity.this, ExplorerActivity.class);
-//                startActivityForResult(explorerIntent, 1111);
-//            }
-//        });
-//
-
-    }
-
-    /**
-     * A native method that is implemented by the 'native-lib' native library,
-     * which is packaged with this application.
-     */
-    //노드를 실행하는 라이브러리 메소드
-    public native Integer startNodeWithArguments(String[] arguments);
-
-
+    //폴더 삭제하는 메소드
     private static boolean deleteFolderRecursively(File file) {
         try {
             boolean res=true;
@@ -655,19 +446,19 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
-    public boolean Init(String rootPath) {
+
+    //listView에 서버목록 넣기 위해 initialize하는 메소드
+    public boolean Init(String rootPath)
+    {
         // 파일 객체 생성
         File fileRoot = new File(rootPath);
         if (!fileRoot.isDirectory()) {
-           // Toast.makeText(MainActivity.this, "저장된 서버가 없습니다", Toast.LENGTH_SHORT).show();
             return false;
         }
-        //textView.setText(rootPath);
 
         // 파일 리스트 가져오기
         String[] fileList = fileRoot.list();
         if (fileList == null) {
-            //Toast.makeText(MainActivity.this, "Could not find List", Toast.LENGTH_SHORT).show();
             return false;
         }
 
@@ -679,7 +470,6 @@ public class MainActivity extends AppCompatActivity {
 
             try {
                 Uri uri = Uri.parse(getApplicationContext().getFilesDir().getAbsolutePath() + "/nodejs-project/" + fileList[i] + "/icon.png");
-
                 imgid.add(uri);
             }
             catch (Exception e)
@@ -689,20 +479,16 @@ public class MainActivity extends AppCompatActivity {
             desc.add("서버");
         }
 
-
         // 리스트 뷰에 적용
-        //listAdapter.notifyDataSetChanged();
         customListView.notifyDataSetChanged();
         return true;
     }
 
 
-    public void nextPath(String str) {
-        //prevPath = currentPath;
+    public void PathForOpen(String str) {
 
         // 현재 경로에서 / 와 다음 경로 붙이기
         nextPath = currentPath + "/" + str;
-
 
         File[] files = new File(nextPath).listFiles();
 
@@ -730,64 +516,18 @@ public class MainActivity extends AppCompatActivity {
                     Log.d("error","에러!");
                 }
 
-
                 nodeName = nextPath+text.toString();
                 serverName=str;
                 iconImgName = "icon.png";
                 uri = Uri.parse(getApplicationContext().getFilesDir().getAbsolutePath() + "/nodejs-project/" + serverName + "/" + iconImgName);
 
+                //팝업 띄우기
                 initiatePopupWindow();
-
-
-
-//mainActivity에 result값 전달.
-//
-//                Intent intent2=new Intent();
-//                intent2.putExtra("result", nextPath+text.toString());
-//                intent2.putExtra("serverName",str);
-//                intent2.putExtra("doorImg","icon.png");
-//                setResult(1234,intent2);
-//                finish();
-
 
             }
         }
-
-
     }
 
-    public void s3credentialsProvider(){
-
-        // Initialize the AWS Credential
-        CognitoCachingCredentialsProvider cognitoCachingCredentialsProvider =
-                new CognitoCachingCredentialsProvider(
-                        getApplicationContext(),
-                        "us-east-1:4d7fa6d0-b38a-4156-b02d-62aa17339c92", // Identity Pool ID
-                        Regions.US_EAST_1 // Region
-                );
-        createAmazonS3Client(cognitoCachingCredentialsProvider);
-    }
-
-    /**
-     *  Create a AmazonS3Client constructor and pass the credentialsProvider.
-     * @param credentialsProvider
-     */
-    public void createAmazonS3Client(CognitoCachingCredentialsProvider
-                                             credentialsProvider){
-
-        // Create an S3 client
-        s3Client = new AmazonS3Client(credentialsProvider);
-
-        // Set the region of your S3 bucket
-        s3Client.setRegion(Region.getRegion(Regions.AP_NORTHEAST_2));
-        s3Client.setEndpoint("s3.ap-northeast-2.amazonaws.com");    }
-
-    public void setTransferUtility(){
-
-       // transferUtility = new TransferUtility(s3Client, getApplicationContext());
-        transferUtility= TransferUtility.builder().context(getApplicationContext()).s3Client(s3Client).build();
-
-    }
 
     private void initiatePopupWindow() {
         try {
@@ -800,12 +540,11 @@ public class MainActivity extends AppCompatActivity {
 
             pwindo = new PopupWindow(layout, mWidthPixels-200, mHeightPixels-700, true);
             pwindo.showAtLocation(layout, Gravity.CENTER, 0, 0);
+
             btnClosePopup = (Button) layout.findViewById(R.id.btn_close_popup);
             btnServerStart=(Button)layout.findViewById(R.id.startBtn);
-
-
             doorImg = (ImageView) layout.findViewById(R.id.DoorImage);
-            Log.d("test",uri.toString());
+
             try {
                 doorImg.setImageURI(uri);
             } catch (Exception e) {
@@ -815,11 +554,13 @@ public class MainActivity extends AppCompatActivity {
             btnClosePopup.setOnClickListener(cancel_button_click_listener);
             btnServerStart.setOnClickListener(start_button_click_listener);
 
-
         } catch (Exception e) {
             e.printStackTrace();
         }
     }
+
+
+
     private View.OnClickListener cancel_button_click_listener =
             new View.OnClickListener() {
 
@@ -828,27 +569,16 @@ public class MainActivity extends AppCompatActivity {
                     pwindo.dismiss();
                 }
             };
+
     private View.OnClickListener start_button_click_listener =
             new View.OnClickListener() {
 
                 public void onClick(View v) {
-
                     _startedNodeAlready = true;
                     cib.start();
                     pwindo.dismiss();
 
                 }
             };
-
-
-
-    private NetworkInfo getNetworkInfo()
-    {
-        ConnectivityManager connectivityManager=(ConnectivityManager) getSystemService(CONNECTIVITY_SERVICE);
-        NetworkInfo networkInfo= connectivityManager.getActiveNetworkInfo();
-        return  networkInfo;
-    }
-
-
 
 }

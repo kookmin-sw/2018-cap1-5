@@ -52,11 +52,11 @@ public class AWSExplorerActivity extends AppCompatActivity {
     private ArrayList<String> items;
     private ArrayList<String> desc;
     private ArrayList<Uri> imgid;
-    private List<String> a;
+    private List<String> awsFolderName;
     private Uri uri;
 
 
-    //다운로드 상태 표시를 위한 핸들러
+    //다운로드 상태 표시를 위한 핸들러 선언
     private Handler handler = new Handler();
     private ProgressDialog progressDialog;
 
@@ -74,21 +74,9 @@ public class AWSExplorerActivity extends AppCompatActivity {
     };
 
 
-    //AWS S3 버켓에서 폴더 이름을 받아오는 메소드
-    public List<String> listKeysInDirectory(String bucketName, AmazonS3 s3) {
-        String delimiter = "/";
-
-        ListObjectsRequest listObjectsRequest = new ListObjectsRequest()
-                .withBucketName(bucketName)
-                .withDelimiter(delimiter);
-        ObjectListing objects = s3.listObjects(listObjectsRequest);
-        return objects.getCommonPrefixes();
-    }
-
-
-
     @Override
-    protected void onCreate(Bundle savedInstanceState) {
+    protected void onCreate(Bundle savedInstanceState)
+    {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_explorer);
 
@@ -114,66 +102,64 @@ public class AWSExplorerActivity extends AppCompatActivity {
 
 
         /// AWS S3 버켓리스트를 listView로 셋팅하기 위해 UI 제어하는 핸들러
-        
+
         final Handler uihandler=new Handler()
         {
             public void handleMessage(Message msg){
-
                 customListView.notifyDataSetChanged();
             }
         };
 
 
+        //ListView initialize
         Init(s3,uihandler);
-
-
         listView.setAdapter(customListView);
 
+
+        //터치했을 때 이벤트 제어 ( 눌렀을 경우 해당 서버 다운로드)
         listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
 
                 String svrname = items.get(position).toString();
-
                 new Thread()
                 {
                     public void run()
                     {
-
-                        downPath(svrname, s3 );
+                        downloadEvent(svrname, s3 );
                     }
                 }.start();
-
             }
         });
     }
 
-    public void Init(AmazonS3 s3, Handler handler3) {
+    ///////이하 메소드 선언부///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+    public void Init(AmazonS3 s3, Handler uihandler) {
 
-        // 파일 리스트 가져오기
         new Thread()
         {
             public void run()
             {
 
-                a=listKeysInDirectory("s3abcd",s3);
-                // Log.d("list",a.toString());
-
-               // Log.d("list",a.toString());
-                if (a == null) {
+                awsFolderName=listKeysInDirectory("s3abcd",s3);
+                if (awsFolderName == null) {
                     Toast.makeText(AWSExplorerActivity.this, "Could not find List", Toast.LENGTH_SHORT).show();
                 }
 
                 items.clear();
-                Iterator iterator = a.iterator();
+
+                //s3abcd 버킷 내의 모든 폴더 이름을 불러와 listView로 넣는 코드 붑ㄴ
+
+                Iterator iterator = awsFolderName.iterator();
                 while (iterator.hasNext()) {
                     String name=(String) iterator.next();
                     items.add(name.replace("/",""));
                     imgid.add(uri);
                     desc.add("서버");
                 }
-                Message premessage=handler3.obtainMessage();
-                 handler3.sendMessage(premessage);
+
+                Message premessage=uihandler.obtainMessage();
+                uihandler.sendMessage(premessage);
 
             }
 
@@ -183,16 +169,12 @@ public class AWSExplorerActivity extends AppCompatActivity {
     }
 
 
+    //Download 처리 메소드
+    public void downloadEvent(String str, AmazonS3 s3)
+    {
 
-
-
-    public void downPath(String str, AmazonS3 s3) {
-
-
-        //The path where we expect the node project to be at runtime.
         String nodeDir = getApplicationContext().getFilesDir().getAbsolutePath() + "/nodejs-project";
 
-        Log.d("log",str);
         handler.post(new Runnable() {
             public void run() {
                 progressDialog.setTitle("Downloading");
@@ -202,42 +184,49 @@ public class AWSExplorerActivity extends AppCompatActivity {
 
             }
         });
+
         TransferManager manager = new TransferManager(s3);
         MultipleFileDownload download =  manager.downloadDirectory("s3abcd", str, new File(nodeDir));
         try
         {
-
-
             download.addProgressListener(new ProgressListener() {
                 @Override
                 public void progressChanged(ProgressEvent progressEvent) {
-                    double pct= progressEvent.getBytesTransferred() * 100.0/ progressEvent.getBytesTransferred();
-
-                    Log.d("percent",String.valueOf(pct));
-                    Log.d("percent",download.getProgress().getPercentTransferred()+"%");
 
                 }
             });
+
             download.waitForCompletion();
+
+            //다운로드 완료 후
             Transfer.TransferState xfer_state=download.getState();
-            Log.d("state",xfer_state.toString());
             progressDialog.cancel();
             if(xfer_state.toString().equals("Completed"))
-            downAlarmHandler.sendEmptyMessage(0);
-
-
+                downAlarmHandler.sendEmptyMessage(0);
 
         }
         catch (InterruptedException e)
         {
         }
         manager.shutdownNow();
+    }
 
-            }
 
+    //AWS S3 버켓에서 폴더 이름을 받아오는 메소드
+    public List<String> listKeysInDirectory(String bucketName, AmazonS3 s3) {
+        String delimiter = "/";
+
+        ListObjectsRequest listObjectsRequest = new ListObjectsRequest()
+                .withBucketName(bucketName)
+                .withDelimiter(delimiter);
+        ObjectListing objects = s3.listObjects(listObjectsRequest);
+        return objects.getCommonPrefixes();
+    }
+
+
+    //뒤로가기 버튼 눌릴 경우 mainActivity 재실행
     @Override
     public void onBackPressed() {
-
         Intent mainIntent=new Intent(AWSExplorerActivity.this, MainActivity.class);
                        startActivity(mainIntent);
     }

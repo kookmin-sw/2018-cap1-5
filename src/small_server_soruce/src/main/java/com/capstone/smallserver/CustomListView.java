@@ -16,6 +16,10 @@ import android.widget.TextView;
 import java.net.URI;
 import java.util.ArrayList;
 
+/*
+ 액티비티 설명: listVIew를 위한 Custom class입니다.
+                                                   */
+
 
 public class CustomListView extends ArrayAdapter<String> {
 
@@ -23,7 +27,6 @@ public class CustomListView extends ArrayAdapter<String> {
     private ArrayList<String> items;
     private ArrayList<Uri> imgid;
     private ArrayList<String> desc;
-    //
 
     public CustomListView(Activity context, ArrayList<String> items, ArrayList<String> desc, ArrayList<Uri> imgid) {
         super(context, R.layout.listveiw_layout,items);
