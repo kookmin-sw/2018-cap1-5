@@ -25,6 +25,7 @@ import com.amazonaws.services.s3.AmazonS3Client;
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileReader;
+import java.io.IOException;
 import java.util.ArrayList;
 
 public class ExternalExplorerActivity extends AppCompatActivity {
@@ -39,6 +40,14 @@ public class ExternalExplorerActivity extends AppCompatActivity {
     private TextView tempView;
     private String uploadTxt;
 
+
+    public void makeDirectory(File targetLocation)
+            throws IOException {
+
+        if (!targetLocation.exists() && !targetLocation.mkdirs()) {
+            throw new IOException("Cannot create dir " + targetLocation.getAbsolutePath());
+        }
+    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -69,7 +78,17 @@ public class ExternalExplorerActivity extends AppCompatActivity {
 
 
         // 루트 경로 가져오기
-        rootPath =  Environment.getExternalStorageDirectory().getAbsolutePath()+"/servers";
+
+        rootPath =  Environment.getExternalStorageDirectory().getAbsolutePath()+"/smallServerUploadFolder";
+
+        try {
+            makeDirectory(new File(rootPath));
+        }
+        catch (IOException e)
+        {
+            e.printStackTrace();
+        }
+
         boolean result = Init(rootPath);
 
         if (result == false)

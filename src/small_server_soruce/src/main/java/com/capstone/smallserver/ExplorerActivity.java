@@ -21,7 +21,6 @@ import java.util.ArrayList;
 public class ExplorerActivity extends AppCompatActivity {
 
     private ListView listView;
-    private ArrayAdapter<String> listAdapter;
     private ArrayList<String> items;
     private ArrayList<String> desc;
     private ArrayList<Uri> imgid;

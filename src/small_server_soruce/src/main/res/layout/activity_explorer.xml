@@ -37,7 +37,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:gravity="center"
-                android:text="작은서버"
+                android:text="서버 마켓"
                 android:textColor="#ffffff"
                 android:textSize="24sp" /><![CDATA[
 
@@ -53,10 +53,11 @@
         android:id="@+id/textView2"
         android:layout_width="match_parent"
         android:layout_height="46dp"
-        android:text="서버를 선택하세요"
         android:layout_marginBottom="10dp"
         android:gravity="center"
-        android:textSize="15sp"/>
+        android:text="다운받을 서버를 선택하세요"
+        android:textSize="15sp" />
+
 
     <FrameLayout
         android:layout_width="match_parent"
@@ -74,5 +75,7 @@
             app:layout_constraintTop_toTopOf="parent"
             app:layout_constraintVertical_bias="1.0" />
     </FrameLayout>
+
+
 
 </LinearLayout>

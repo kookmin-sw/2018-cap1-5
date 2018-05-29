@@ -31,7 +31,7 @@
         </activity>
         <activity android:name="com.capstone.smallserver.MainActivity"/>
         <activity android:name="com.capstone.smallserver.ExplorerActivity"/>
-        <activity android:name="com.capstone.smallserver.UploadActivity"/>
+        <activity android:name="com.capstone.smallserver.ServerListMangement"/>
         <activity android:name="com.capstone.smallserver.AWSExplorerActivity"/>
         <activity android:name="com.capstone.smallserver.ExternalExplorerActivity"/>
         <service
