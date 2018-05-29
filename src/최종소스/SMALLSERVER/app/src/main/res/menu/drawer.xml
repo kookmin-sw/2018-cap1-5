@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:android="http://schemas.android.com/apk/res/android">
+
+
+               <item
+                 android:id="@+id/homehome"
+                android:icon="@android:drawable/radiobutton_off_background"
+                   android:title="@string/home" />
+                <item
+                    android:id="@+id/hotspot"
+                    android:icon="@android:drawable/radiobutton_off_background"
+                    android:title="@string/hotspot" />
+                <item
+                    android:id="@+id/server_market"
+                    android:icon="@android:drawable/radiobutton_off_background"
+                    android:title="@string/server_setting" />
+
+            <item android:title="@string/nav_title">
+                <menu>
+                    <item
+                        android:id="@+id/server_make"
+                        android:icon="@android:drawable/radiobutton_off_background"
+                        android:title="@string/server_make" />
+                    <item
+                    android:id="@+id/server_upload"
+                    android:icon="@android:drawable/radiobutton_off_background"
+                    android:title="@string/server_upload" />
+                </menu>
+            </item>
+
+
+
+</menu>
