@@ -17,6 +17,7 @@ https://blog.naver.com/jentoo
 https://youtu.be/-gu0ZuukWVc
 
 ## 3. 팀 소개
+<img src="./doc/gitpageSource/md_03.jpg" width="600"/>
 
 ### - 지도교수
 
@@ -55,5 +56,5 @@ e-mail : gj0665@gmail.com
 
 ## 5. 사용법
 
-![cap5door](./doc/gitpageSource/md_05.png)
+![instructions](./doc/gitpageSource/md_05.png)
 
