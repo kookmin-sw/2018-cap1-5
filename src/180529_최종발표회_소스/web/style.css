@@ -12,16 +12,26 @@ a{
     color: #555555;
 }
 
-/* li */
 li{
-    list-style: none;
+    text-align: left;
 }
 
+.li{
+    font-size: 25px;
+    margin: 30px;
+}
+
+.li_title{
+    margin-top: 18%;
+    margin-bottom: 8%;
+    font-size: 25px;
+    list-style-type: none;
+    text-align: center;
+}
 /* body */
 body{
     margin: 0;
     min-width: 992px;
-    font-family: "Helvetica";
 }
 
 .header{
@@ -73,19 +83,16 @@ body{
     margin: 0;
 }
 
-/* navbar #menu li */
 .navbar #menu li{
     float: left;
     margin-left: 50px;
     line-height: 60px;
 }
 
-/* navbar #menu li a */
 .navbar #menu li a{
     color: #555555;
-    font-size: 13px;
+    font-size: 17px;
     text-decoration: none;
-    font-weight: bold;
 }
 /* hero-header */
 .hero-header{
@@ -94,12 +101,10 @@ body{
     background-repeat: no-repeat;
     background-size: cover;
     background-position: center;
-    
 }
 
 h3{
-    font-size: 22px;
-    color: #555555;
+    font-size: 25px;
     margin-top: 60px;
     margin-bottom: 60px;
     text-align: center;
@@ -107,40 +112,28 @@ h3{
 
 .introduction{
     display: block;
-    text-align: center;
-}
-.member_introduction{
-    width: 1360px;
-    margin: 0 auto 90px auto;
+    margin: 0 auto;
+    width: 1200px;
 }
 
-.member_introduction:after {
+.intro{
+    display: block;
+    float:left;
+    clear: both;
+    margin-left: auto;
+    margin-right: auto;
+}
+
+.intro_ul{
+    margin-left: 50%;
+    margin-right: auto;
+    margin-top: 5%;
+}
+
+.intro_ul:after {
     content: "";
     display: block;
     clear: both;
-}
-.img_member{
-    width: 300px;
-    height: 300px;
-    margin: 20px;
-    float: left;
-    display: block;
-}
-
-.content_member{
-    margin-top: 0px;
-    width: 300px;
-    margin: 20px;
-    text-align: center;
-    float: left;
-}
-
-.img_together{
-    width: 500px;
-    height: 500px;
-    display: block;
-    margin-left: auto;
-    margin-right: auto;
 }
 
 /*slider-holder*/
@@ -151,7 +144,7 @@ h3{
     margin-left: auto;
     margin-right: auto;
     margin-top: 0px;
-    text-align: center;
+    text-align: center; 
     overflow: hidden;
 }
         
@@ -212,16 +205,15 @@ h3{
 }
 .effect{ 
     display: block;
-    margin-left: auto;
-    margin-right: auto;
-    margin-bottom: 80px;
+    margin: 80px auto;
 }
-.effect_video{
+.video{
     display: block;
     margin-left: auto;
     margin-right: auto;
-    margin-top: 60px;
+    margin-top: 100px;
 }
+
 .product-name{
     margin-top: 20px;
     margin-bottom: 4px;
@@ -231,11 +223,59 @@ h3{
     clear: both;
 }
 
-.navbar .btn{
+.btn{
     color: #555555;
+    font-weight: bold;
 }
-.navbar .btn:hover {
-    color: lightblue;
+
+/* effect */
+
+.effect_introduction{
+    width: 1020px;
+    margin: 0 auto;
+}
+.effect{
+    display: block;
+}
+.img_effect{
+    width: 300px;
+    height: 330px;
+    margin: 20px;
+    float: left;
+    display: block;
+}
+
+/* member */
+.member{
+    clear: both;
+    padding: 1px 0 0;
+    margin: 80px auto 80px;
+}
+.member_introduction{
+    width: 1360px;
+    margin: 0 auto;
+}
+
+.member_introduction:after {
+    content: "";
+    display: block;
+    clear: both;
+}
+.img_member{
+    width: 300px;
+    height: 300px;
+    margin: 20px;
+    float: left;
+    display: block;
+}
+
+.content_member{
+    margin-top: 0px;
+    width: 300px;
+    margin: 20px;
+    text-align: center;
+    color: #555555;
+    float: left;
 }
 
 footer{
