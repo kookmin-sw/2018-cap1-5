@@ -2,8 +2,7 @@
 ![cap5door](./doc/gitpageSource/cap5door.png)
 
 **팀페이지 주소** -
-https://leeky-courses.github.io/web-client-2018-01-project-jentoopenguin/smallserver/smallserver.html
-https://github.com/kookmin-sw/2018-cap1-5
+https://kookmin-sw.github.io/2018-cap1-5/src/180529_최종발표회_소스/web/smallserver.html
 
 **블로그 주소** -
 https://blog.naver.com/jentoo
