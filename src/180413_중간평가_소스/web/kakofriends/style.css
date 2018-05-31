@@ -1,0 +1,52 @@
+h1{
+    
+    color: black;
+    font-size: 50px;
+    font-weight: 900;
+    text-decoration: none;
+    background-color:white;
+}
+
+h2{
+    color: darkorange;
+    font-size: 30px;
+    font-weight: 100;
+    text-decoration: none;
+    background-color:none;
+}
+
+}
+a href{
+    color: dimgray;
+    font-size: 10px;
+    font-weight: 100;
+    text-decoration: none;
+    background-color:none;
+}
+
+marquee{
+    color: darkorange;
+    font-size: 10px;
+    font-weight: 100;
+    text-decoration: none;
+    background-color:none;
+}
+
+h6{color: black;
+    font-size: 12px;
+    font-weight: 200;
+    text-decoration: none;
+    background-color:whitesmoke;}
+
+div{
+    color: dimgray;
+    font-size: 13px;
+    font-weight: 100;
+    text-decoration: none;
+    background-color:white;
+    
+}
+
+a{
+    
+}

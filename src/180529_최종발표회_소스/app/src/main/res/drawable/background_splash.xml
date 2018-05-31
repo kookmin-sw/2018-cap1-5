@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layer-list xmlns:android="http://schemas.android.com/apk/res/android">
+    <!-- 배경 -->
+    <!--<item-->
+
+        <!--android:drawable="@color/backback"/>-->
+    <!--&lt;!&ndash; 로고 &ndash;&gt;-->
+    <!--<item>-->
+
+        <!--<bitmap-->
+            <!--android:gravity="center"-->
+            <!--android:src="@drawable/cap5door"/>-->
+    <!--</item>-->
+    <item>
+        <shape>
+            <gradient
+                android:startColor="#E5F1FA"
+                android:endColor="#F3F7FC"
+                android:angle="90"/>
+
+        </shape>
+
+        </item>
+    <item>
+        <bitmap
+            android:gravity="center"
+            android:src="@drawable/cap5door"
+            />
+    </item>
+
+    </layer-list>
