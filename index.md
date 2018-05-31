@@ -2,7 +2,10 @@
 ![cap5door](./doc/gitpageSource/cap5door.png)
 
 **팀페이지 주소** -
-https://github.com/kookmin-sw/2018-cap1-5
+
+팀페이지 주소 - http://www.mysmallserver.com
+
+블로그 주소 - https://blog.naver.com/jentoo
 
 ## 1. 프로젝트 소개
 
